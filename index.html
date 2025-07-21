@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+  <head>
+    <title>Gates of Hell</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/leaflet.css">
+
+    
+    <!-- import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+    
+
+    
+    <script src="/leaflet.js" ></script>
+    <script src="/leaflet.curve.js" ></script>
+    <script src="/leaflet.label.js" ></script>
+
+  </head>  
+  <body style="height:100%">
+     <div style="height:100%" id="mapid"></div>
+
+
+    
+    <script>
+      
+        const hellGateEast = [39.961862, -75.174046];
+        const hellGateWest = [37.432606, -122.171245];
+
+        function midpoint ($lat1, $lng1, $lat2, $lng2) {
+            $lat1 = $lat1 * 0.017453292519943295;
+            $lng1 = $lng1 * 0.017453292519943295;
+            $lat2 = $lat2 * 0.017453292519943295;
+            $lng2 = $lng2 * 0.017453292519943295;
+
+            $dlng = $lng2 - $lng1;
+            $Bx = Math.cos($lat2) * Math.cos($dlng);
+            $By = Math.cos($lat2) * Math.sin($dlng);
+            $lat3 = Math.atan2( Math.sin($lat1)+Math.sin($lat2),
+            Math.sqrt((Math.cos($lat1)+$Bx)*(Math.cos($lat1)+$Bx) + $By*$By ));
+            $lng3 = $lng1 + Math.atan2($By, (Math.cos($lat1) + $Bx));
+            $pi = 3.141592653589793;
+            $lat = ($lat3*180)/$pi;
+            $lng = ($lng3*180)/$pi;
+            return [$lat,$lng];
+        }    
+        
+       const hellCenter = midpoint(hellGateWest[0],hellGateWest[1],hellGateEast[0],hellGateEast[1])
+       
+      
+        var mymap = L.map('mapid').setView(hellCenter, 4);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          tileSize: 512,
+          maxZoom: 18,
+          zoomOffset: -1,
+          id: 'mapbox/streets-v11',
+          accessToken: 'pk.eyJ1IjoidGhpc2lzbWF0dG1pbGxlciIsImEiOiJjazEwemg5djAwMTBlM25td3lnanRsMHE5In0.-grvP2Uz_JWqh5Y05q8Q2g'
+        }).addTo(mymap);
+        
+        // var pathLine = L.polyline([hellGateEast,hellGateWest]).addTo(mymap)
+        
+        console.log(hellCenter)
+        
+
+
+//         var offsetX = hellGateWest[1] - hellGateEast[1],
+//           offsetY = hellGateWest[0] - hellGateEast[0];
+
+        // var r = Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2)),
+        //   theta = Math.atan2(offsetY, offsetX);
+
+//         var thetaOffset = (3.14 / 10);
+
+//         var r2 = (r / 2) / (Math.cos(thetaOffset)),
+//           theta2 = theta + thetaOffset;
+
+//         var midpointX = (r2 * Math.cos(theta2)) + hellGateEast[1],
+//           midpointY = (r2 * Math.sin(theta2)) + hellGateEast[0];
+
+        var midpointLatLng = hellCenter;
+        var latlngs = [];
+
+        latlngs.push(hellGateEast, hellCenter, hellGateWest);
+      
+        var pathOptions = {
+          color: 'black',
+          weight: 3
+        }
+        
+        
+
+        var curvedPath = L.curve(
+          [
+            'M', hellGateEast,
+            'Q', [hellCenter[0]+2.3666,hellCenter[1]],
+            hellGateWest
+          ], pathOptions).addTo(mymap);
+        var max = 2020320
+        window.circles = []
+        window.circles.push(L.circle(hellCenter,  max,{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Limbo', {sticky: true, direction: 'auto'}))
+        window.circles.push(L.circle(hellCenter,  max - (max/8*1),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Lust', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*2),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Gluttony', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*3),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Greed', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*4),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Wrath', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*5),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Heresy', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*6),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Violence', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*7),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Fraud', {sticky: true, direction: 'auto'}));
+        window.circles.push(L.circle(hellCenter,  max - (max/8*7.8),{fillColor: "tomato", color: "rgba(0,0,0,0.15)", opacity:.5}).addTo(mymap).bindTooltip('Treachery', {sticky: true, direction: 'auto'}));
+
+    </script>
+    
+    <a href="#open-modal" title="About"><img id="dante" src="https://cdn.glitch.com/23a8b931-0c92-4eab-a3db-2cd51b77465b%2Fdante.png?v=1569506071018"></a>
+  
+  
+  <div id="open-modal" class="modal-window">
+  <div>
+    <a href="#" title="Close" class="modal-close">Close</a>
+    <h1>Bicostal Gates of Hell</h1>
+    <div>
+      <p>There are two of <a href="https://en.wikipedia.org/wiki/The_Gates_of_Hell" target="_blank">Rodin's The Gates of Hell</a> in the United States one at <a href="https://goo.gl/maps/dboyutR7WzbsoNju7" target="_blank">Stanford University</a> and one at the <a href="https://goo.gl/maps/zbd1zA8f5U3Q9n4N6" target="_blank">Rodin Museum in Philadelphia</a>. If these are on the perimeter of Dante's Inferno...</p>
+
+      <input type="checkbox" name="checkbox" id="checkbox_id" value="value" checked>
+      <label for="checkbox_id">Toggle Shading</label>
+      
+      
+    </div>
+
+    
+  </div>
+    </div>
+    
+    
+    
+    <script>
+      
+
+      document.getElementById('checkbox_id').onclick = function(){
+        if (this.checked){
+          window.circles.forEach((x)=>{
+            x.setStyle({fillColor: 'tomato'});
+          })
+          
+        }else{
+          window.circles.forEach((x)=>{
+            x.setStyle({fillColor: 'transparent'});
+          })
+          
+        }
+      }
+    
+    </script>
+    
+    
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;z-index:1000"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+    
+        
+    
+  </body>
+</html>
